@@ -1,3 +1,49 @@
+## Отчёт
+1. Установил необходимые утилиты: ngrok, tmux, libevent, ncurses
+```sh
+$ wget https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz # скачиваем архим libevent
+$ tar -xvzf libevent-2.1.8-stable.tar.gz # разархивируем его
+$ cd libevent-2.1.8-stable # перемещаемся в папку с ним
+$ ./configure --prefix=${HOME_PREFIX} # указываем путь до директории для установки
+$ make && make install # устанавливаем
+$ cd .. # перемещаемся в родительскую папку
+
+$ wget http://invisible-island.net/datafiles/release/ncurses.tar.gz # скачиваем архив ncurses
+$ tar -xvzf ncurses.tar.gz # разархивируем его
+$ cd ncurses-5.9 # перемещаемся в папку созданную после распаковывания
+$ ./configure --prefix=${HOME_PREFIX} # указываем путь до установки
+$ make && make install # устанавливаем
+$ cd .. # перемещаемся в родительский каталог
+
+$ wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz # скачиваем архив tmux
+$ tar -xvzf tmux-2.5.tar.gz # разархивируем его
+$ cd tmux-2.5 # перемещаемся в папку созданную после распаковывания
+$ ./configure --prefix=${HOME_PREFIX} CFLAGS="-I${HOME_PREFIX}/include -I${HOME_PREFIX}/include/ncurses" LDFLAGS="-L${HOME_PREFIX}/lib"
+$ make && make install # устанавливаем
+$ cd ..
+
+$ wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip # скачиваем архив ngrok
+$ unizp ngrok-stable-linux-amd64.zip # распаковываем его
+$ mv ngrok ${HOME_PREFIX}/bin # перемещаем ngrok в другую директорию
+```
+2. Авторизировался на https://ngrok.com с помощью GitHub, чтобы получить токен для авторизации туннеля в ngrok
+3. С помощью команды tmux new -s session создал новую сессию для ngrok
+4. Подключил ngrok к терминалу
+```sh
+$ export NGROK_TOKEN=<токен> # создаем переменную окружения
+$ ngrok authtoken ${NGROK_TOKEN} # авторизуемся в ngrok
+$ ngrok tcp 22 # указываем тип протокола и порт подключения
+```
+![Снимок экрана от 2022-05-20 22-55-38](https://user-images.githubusercontent.com/90759633/169601997-cd5d3b77-4778-41a5-b73d-4e0337083476.png)
+
+![Снимок экрана от 2022-05-20 22-55-32](https://user-images.githubusercontent.com/90759633/169601975-1285ad77-9aac-41e7-a19f-a8610b946b49.png)
+
+5. Теперь с помощью SSH или tmux можно подключиться к локальному сеансу для совместной разработки с помощью порта (в нашем случае 22 порт по протоколу tcp)
+```sh
+tmux a -t session
+ssh ${USERNAME}@0.tcp.ngrok.io -p 22
+```
+
 ## Laboratory work XI
 
 Данная лабораторная работа посвещена изучению процесса создания сеансов совместной разработки с использованием инструмента **ngrok**
